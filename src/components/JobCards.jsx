@@ -23,8 +23,8 @@ function JobCards({ fetchArray, search, searchArray, backButton }) {
     if (searchQuery === "") {
       alert("Please input a job title!");
     } else {
-      console.log(search.searchresults.data);
-      searchArray(searchQuery);
+      setisLoading(true);
+      await searchArray(searchQuery);
       setisLoading(false);
     }
   };
