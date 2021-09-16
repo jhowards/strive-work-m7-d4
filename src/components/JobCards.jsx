@@ -1,7 +1,7 @@
 import React from "react";
 import SingleJob from "./SingleJob";
 import { Col, Container, Form, Row, Button, Spinner } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function JobCards() {
   const [searchQuery, setSearchQuery] = useState("");
