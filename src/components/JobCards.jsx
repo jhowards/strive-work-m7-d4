@@ -1,9 +1,19 @@
 import React from "react";
 import SingleJob from "./SingleJob";
 import { Col, Container, Form, Row, Button, Spinner } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { searchArrayAction, backButtonAction } from "../actions";
 
-function JobCards() {
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch) => ({
+  searchArray: (search) => dispatch(searchArrayAction(search)),
+  fetchArray: () => dispatch(searchArrayAction()),
+  backButton: () => dispatch(backButtonAction(false)),
+});
+
+function JobCards({ fetchArray, search, searchArray, backButton }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setisLoading] = useState(false);
   const [jobsArray, setJobsArray] = useState([]);
@@ -13,29 +23,37 @@ function JobCards() {
     if (searchQuery === "") {
       alert("Please input a job title!");
     } else {
-      await getArray();
+      console.log(search.searchresults.data);
+      searchArray(searchQuery);
       setisLoading(false);
     }
   };
 
-  const getArray = async () => {
-    setisLoading(true);
-    try {
-      let response = await fetch(
-        `https://strive-jobs-api.herokuapp.com/jobs?search=${searchQuery}`
-      );
-      let jobsresponse = await response.json();
-      if (jobsresponse.length === 0) {
-        alert("No jobs found with this title!");
-      }
-      setJobsArray(jobsresponse.data);
-      console.log(jobsArray);
-      setisLoading(false);
-    } catch (error) {
-      console.log(error);
-      setisLoading(false);
+  // const getArray = async () => {
+  //   setisLoading(true);
+  //   try {
+  //     let response = await fetch(
+  //       `https://strive-jobs-api.herokuapp.com/jobs?search=${searchQuery}`
+  //     );
+  //     let jobsresponse = await response.json();
+  //     if (jobsresponse.length === 0) {
+  //       alert("No jobs found with this title!");
+  //     }
+  //     setJobsArray(jobsresponse.data);
+  //     console.log(jobsArray);
+  //     setisLoading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setisLoading(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (search.backbutton === false) {
+      fetchArray();
+    } else {
     }
-  };
+  }, []);
 
   return (
     <Container className="mt-4">
@@ -69,7 +87,7 @@ function JobCards() {
                 className="mx-auto mt-5"
               ></Spinner>
             ) : (
-              jobsArray.map((b) => (
+              search.searchresults.map((b) => (
                 <Col xs={3} key={b._id}>
                   <SingleJob job={b} id={b._id} />
                 </Col>
@@ -82,4 +100,4 @@ function JobCards() {
   );
 }
 
-export default JobCards;
+export default connect(mapStateToProps, mapDispatchToProps)(JobCards);

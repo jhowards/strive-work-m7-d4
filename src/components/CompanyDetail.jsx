@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { addToFavouritesAction } from "../actions";
+import { addToFavouritesAction, backButtonAction } from "../actions";
 
 const mapStateToProps = (state) => ({
   companieslength: state.companies.company.length,
@@ -14,6 +14,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   addToFavourites: (companyToAdd) =>
     dispatch(addToFavouritesAction(companyToAdd)),
+  backButton: () => dispatch(backButtonAction(true)),
 });
 
 function CompanyDetail(props) {
@@ -83,7 +84,12 @@ function CompanyDetail(props) {
             Favourite Companies ({props.companieslength})
           </Button>
         </Link>
-        <Link to="/search">
+        <Link
+          onClick={() => {
+            props.backButton();
+          }}
+          to="/search"
+        >
           <Button className="backbutton">Back</Button>
         </Link>
       </div>
